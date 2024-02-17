@@ -1,4 +1,4 @@
-import { v4 as uuid } from 'uuid';
+import { randomUUID } from "crypto";
 
 class Player {
 	_name: string;
@@ -11,7 +11,7 @@ class Player {
 		this._name = name;
 		this._password = password;
 		this._socket = socket;
-		this._id = uuid();
+		this._id = randomUUID();
 		this._error = false;
 		this._errorText = '';
 	}
@@ -22,6 +22,9 @@ class Player {
 				error: this._error,
 				errorText: this._errorText,
 		}
+	}
+	getPlayerName() {
+		return this._name;
 	}
 }
 

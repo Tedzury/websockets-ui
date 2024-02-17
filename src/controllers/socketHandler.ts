@@ -2,14 +2,20 @@ import validateJson from '../helpers/validateJson';
 import Player from '../entities/player';
 import messageWrapper from '../helpers/messageWrapper';
 import { MSG_TYPES, ERROR_MSGS } from '../constants/constants';
+import PlayersList from '../entities/playerList';
 
-const players = [];
+const playersList = new PlayersList();
 
 const dispatcher = {
 	reg: (_data: string, _socket: WebSocket) => {
 		const { name, password } = validateJson(_data);
+		const isActive = playersList.checkActivePlayer(name);
+		if (isActive) {
+			_socket.send(messageWrapper(MSG_TYPES.ERR, { message: ERROR_MSGS.PLAYER_ALREADY_ACTIVE }))
+			return console.log(ERROR_MSGS.PLAYER_ALREADY_ACTIVE)
+		};
 		const newPlayer = new Player(name, password, _socket);
-		players.push(newPlayer);
+		playersList.addPlayer(newPlayer);
 		_socket.send(messageWrapper(MSG_TYPES.REG, newPlayer.getPlayerInfo()));
 	},
 };
