@@ -15,6 +15,9 @@ class RoomList {
 			player._socket.send(messageWrapper(MSG_TYPES.UPDATE_ROOM, this.getAvailableRooms()));
 		})
 	}
+	getRoomById(roomId: string) {
+		return this._roomList.find((room) => room.getRoomId() === roomId);
+	}
 	createRoom (roomUser: {name: string, index: string}) {
 		const newRoom = new Room();
 		newRoom.addPlayer(roomUser);
