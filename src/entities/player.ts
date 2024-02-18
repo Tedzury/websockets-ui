@@ -7,6 +7,8 @@ class Player {
 	_errorText: string;
 	_socket: WebSocket;
 	_id: string;
+	_wins: number;
+	_room_id: string;
 	constructor (name: string, password: string, socket: WebSocket) {
 		this._name = name;
 		this._password = password;
@@ -14,6 +16,8 @@ class Player {
 		this._id = randomUUID();
 		this._error = false;
 		this._errorText = '';
+		this._wins = 0;
+		this._room_id = '';
 	}
 	getPlayerInfo() {
 		return {
@@ -25,6 +29,21 @@ class Player {
 	}
 	getPlayerName() {
 		return this._name;
+	}
+	addRoom(roomId: string) {
+		this._room_id = roomId;
+	}
+	removeRoom() {
+		this._room_id = ''
+	}
+	getPlayerRequisites() {
+		return { name: this._name, index: this._id }
+	}
+	getWinsData () {
+		return {
+			name: this._name,
+			wins: this._wins,
+		}
 	}
 }
 
