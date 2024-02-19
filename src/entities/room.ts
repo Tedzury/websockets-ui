@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto';
 import Player from './player';
-
+import Game from './game';
 
 class Room {
 	_roomId: string;
@@ -17,7 +17,7 @@ class Room {
 	getRoomInfo() {
 		return {
 			roomId: this._roomId,
-			roomUsers: this._roomPlayers,
+			roomUsers: this._roomPlayers.map((player) => ({ name: player._name, index: player._id })),
 		};
 	}
 	addPlayer(_player: Player) {
@@ -27,10 +27,13 @@ class Room {
 		return this._roomPlayers.length < 2;
 	}
 	setShipsSent() {
-		this._playersReady = this._playersReady + 1;
+		this._playersReady += 1;
 		if (this._playersReady === 2) {
-			console.log('Game has started!');
+			this.startGame();
 		}
+	}
+	startGame() {
+		new Game(this._roomPlayers)
 	}
 }
 

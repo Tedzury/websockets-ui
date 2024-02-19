@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { ShipType } from '../constants/types';
+import Game from './game';
 
 class Player {
 	_name: string;
@@ -11,6 +12,7 @@ class Player {
 	_wins: number;
 	_room_id: string;
 	_ships?: ShipType[];
+	_game?: Game;
 	constructor(name: string, password: string, socket: WebSocket) {
 		this._name = name;
 		this._password = password;
