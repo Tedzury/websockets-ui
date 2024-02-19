@@ -1,16 +1,16 @@
-import Player from "./player";
+import Player from './player';
 
 class CurrPlayer {
 	_player_entity: unknown | Player;
-	constructor () {
+	constructor() {
 		this._player_entity;
 	}
-	getPlayer () {
+	getPlayer() {
 		return this._player_entity as Player;
 	}
-	setPlayer (player: Player) {
+	setPlayer(player: Player) {
 		this._player_entity = player;
 	}
-};
+}
 
 export default CurrPlayer;

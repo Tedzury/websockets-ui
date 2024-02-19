@@ -1,7 +1,8 @@
-import Room from "./room";
-import PlayersList from "./playerList";
-import messageWrapper from "../helpers/messageWrapper";
-import { MSG_TYPES } from "../constants/constants";
+import Room from './room';
+import PlayersList from './playerList';
+import Player from './player';
+import messageWrapper from '../helpers/messageWrapper';
+import { MSG_TYPES } from '../constants/constants';
 
 class RoomList {
 	_roomList: Room[];
@@ -13,23 +14,23 @@ class RoomList {
 	informPlayers() {
 		this._playersList._list.forEach((player) => {
 			player._socket.send(messageWrapper(MSG_TYPES.UPDATE_ROOM, this.getAvailableRooms()));
-		})
+		});
 	}
 	getRoomById(roomId: string) {
 		return this._roomList.find((room) => room.getRoomId() === roomId);
 	}
-	createRoom (roomUser: {name: string, index: string}) {
+	createRoom(roomUser: Player) {
 		const newRoom = new Room();
 		newRoom.addPlayer(roomUser);
 		this._roomList.push(newRoom);
 		return newRoom.getRoomId();
 	}
-	deleteRoom (roomId: string) {
-		this._roomList = this._roomList.filter((room) => room._room_id !== roomId);
+	deleteRoom(roomId: string) {
+		this._roomList = this._roomList.filter((room) => room._roomId !== roomId);
 	}
-	getAvailableRooms () {
+	getAvailableRooms() {
 		return this._roomList.filter((room) => room.isRoomAvailable()).map((room) => room.getRoomInfo());
 	}
-};
+}
 
 export default RoomList;

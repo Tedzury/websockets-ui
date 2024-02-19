@@ -9,8 +9,7 @@ const playersList = new PlayersList();
 const roomList = new RoomList(playersList);
 
 const socketHandler = (socket: WebSocket) => {
-
-	const currPlayer = new CurrPlayer;
+	const currPlayer = new CurrPlayer();
 	const dispatcher = gameDispatcher(playersList, roomList);
 
 	socket.onmessage = (msg: { data: string }) => {
@@ -21,19 +20,19 @@ const socketHandler = (socket: WebSocket) => {
 		} else {
 			return console.log(ERROR_MSGS.UNEXPENTED_ERR);
 		}
-	}
+	};
 
 	socket.onclose = () => {
 		const currentPlayer = currPlayer.getPlayer();
 		if (currentPlayer) {
-			playersList.removePlayer(currentPlayer._id)
+			playersList.removePlayer(currentPlayer._id);
 			if (currentPlayer._room_id) {
 				roomList.deleteRoom(currentPlayer._room_id);
-				currentPlayer.removeRoom()
+				currentPlayer.removeRoom();
 				roomList.informPlayers();
 			}
 		}
-	}
-}
+	};
+};
 
 export default socketHandler;

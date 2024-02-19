@@ -1,29 +1,37 @@
-import { randomUUID } from "crypto";
+import { randomUUID } from 'crypto';
+import Player from './player';
 
-type RoomPlayer = {name: string, index:string}
 
 class Room {
-	_room_id: string;
-	_room_users: RoomPlayer[]
-	constructor () {
-		this._room_id = randomUUID()
-		this._room_users = [];
+	_roomId: string;
+	_roomPlayers: Player[];
+	_playersReady: number;
+	constructor() {
+		this._roomId = randomUUID();
+		this._roomPlayers = [];
+		this._playersReady = 0;
 	}
-	getRoomId () {
-		return this._room_id;
+	getRoomId() {
+		return this._roomId;
 	}
-	getRoomInfo () {
+	getRoomInfo() {
 		return {
-			roomId: this._room_id,
-			roomUsers: this._room_users
+			roomId: this._roomId,
+			roomUsers: this._roomPlayers,
+		};
 	}
-	}
-	addPlayer (_roomPlayer: RoomPlayer) {
-		this._room_users.push(_roomPlayer);
+	addPlayer(_player: Player) {
+		this._roomPlayers.push(_player);
 	}
 	isRoomAvailable() {
-		return this._room_users.length < 2;
+		return this._roomPlayers.length < 2;
 	}
-};
+	setShipsSent() {
+		this._playersReady = this._playersReady + 1;
+		if (this._playersReady === 2) {
+			console.log('Game has started!');
+		}
+	}
+}
 
 export default Room;

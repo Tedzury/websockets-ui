@@ -1,4 +1,5 @@
-import { randomUUID } from "crypto";
+import { randomUUID } from 'crypto';
+import { ShipType } from '../constants/types';
 
 class Player {
 	_name: string;
@@ -9,7 +10,8 @@ class Player {
 	_id: string;
 	_wins: number;
 	_room_id: string;
-	constructor (name: string, password: string, socket: WebSocket) {
+	_ships?: ShipType[];
+	constructor(name: string, password: string, socket: WebSocket) {
 		this._name = name;
 		this._password = password;
 		this._socket = socket;
@@ -21,11 +23,11 @@ class Player {
 	}
 	getPlayerInfo() {
 		return {
-				name: this._name,
-				index: this._id,
-				error: this._error,
-				errorText: this._errorText,
-		}
+			name: this._name,
+			index: this._id,
+			error: this._error,
+			errorText: this._errorText,
+		};
 	}
 	getPlayerName() {
 		return this._name;
@@ -34,16 +36,16 @@ class Player {
 		this._room_id = roomId;
 	}
 	removeRoom() {
-		this._room_id = ''
+		this._room_id = '';
 	}
 	getPlayerRequisites() {
-		return { name: this._name, index: this._id }
+		return { name: this._name, index: this._id };
 	}
-	getWinsData () {
+	getWinsData() {
 		return {
 			name: this._name,
 			wins: this._wins,
-		}
+		};
 	}
 }
 

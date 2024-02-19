@@ -1,9 +1,10 @@
-import CurrPlayer from "../entities/currentPlayer";
-import PlayersList from "../entities/playerList";
-import RoomList from "../entities/roomList";
-import reg from "./dispatchSubFuncs/reg";
-import createRoom from "./dispatchSubFuncs/createRoom";
-import addUserToRoom from "./dispatchSubFuncs/addUserToRoom";
+import CurrPlayer from '../entities/currentPlayer';
+import PlayersList from '../entities/playerList';
+import RoomList from '../entities/roomList';
+import reg from './dispatchSubFuncs/reg';
+import createRoom from './dispatchSubFuncs/createRoom';
+import addUserToRoom from './dispatchSubFuncs/addUserToRoom';
+import validateJson from '../helpers/validateJson';
 
 const gameDispatcher = (playersList: PlayersList, roomList: RoomList) => {
 	return {
@@ -14,9 +15,16 @@ const gameDispatcher = (playersList: PlayersList, roomList: RoomList) => {
 			createRoom(_socket, _currPlayer, roomList);
 		},
 		add_user_to_room: (_data: string, _socket: WebSocket, _currPlayer: CurrPlayer) => {
-			addUserToRoom(_data, _socket, _currPlayer, playersList, roomList)
-		}
+			addUserToRoom(_data, _socket, _currPlayer, playersList, roomList);
+		},
+		add_ships: (_data: string, _socket: WebSocket, _currPlayer: CurrPlayer) => {
+			const currPlayer = _currPlayer.getPlayer();
+			const { ships } = validateJson(_data);
+			currPlayer._ships = ships;
+			const playerRoom = roomList.getRoomById(currPlayer._room_id);
+			playerRoom.setShipsSent();
+		},
 	};
-}
+};
 
 export default gameDispatcher;
