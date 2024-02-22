@@ -1,6 +1,7 @@
 import { randomUUID } from 'crypto';
-import { ShipType } from '../constants/types';
+import { CellProps, ShipType } from '../constants/types';
 import Game from './game';
+import ShipsList from './shipsList';
 
 class Player {
 	_name: string;
@@ -11,8 +12,10 @@ class Player {
 	_id: string;
 	_wins: number;
 	_room_id: string;
-	_ships?: ShipType[];
+	_shipsSchema?: ShipType[];
 	_game?: Game;
+	_field?: CellProps[][];
+	_shipsList: ShipsList;
 	constructor(name: string, password: string, socket: WebSocket) {
 		this._name = name;
 		this._password = password;

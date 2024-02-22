@@ -7,7 +7,15 @@ const MSG_TYPES = {
 	CREATE_GAME: 'create_game',
 	ADD_SHIPS: 'add_ships',
 	START_GAME: 'start_game',
+	TURN: 'turn',
+	ATTACK: 'attack',
 	ERR: 'error',
+};
+
+export const ATTACK_STATUS = {
+	MISS: 'miss',
+	KILLED: 'killed',
+	SHOT: 'shot',
 };
 
 const ERROR_MSGS = {
@@ -15,6 +23,9 @@ const ERROR_MSGS = {
 	PLAYER_ALREADY_ACTIVE: "Current players is already active! You can't enter twice!",
 	ALREADY_IN_ROOM: "Current player is already in room! You can't be in two rooms simultaneously!",
 	OWN_ROOM: "It's own player's room. You can't add yourself twice in the room!",
+	ALREADY_SHOT_CELL:
+		"You've already shoot that cell, it is pretty dumb to shoot it again, right? Try to choose another cell!",
+	OPPONENTS_TURN: "It's not your turn now, opponent takes it's shot!",
 };
 
 export { MSG_TYPES, ERROR_MSGS };

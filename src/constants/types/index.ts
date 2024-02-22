@@ -7,3 +7,16 @@ export type ShipType = {
 	length: number;
 	type: 'small' | 'medium' | 'large' | 'huge';
 };
+
+export type ShipObjType = {
+	direction: boolean;
+	position: {
+		x: number;
+		y: number;
+	};
+	length: number;
+};
+
+export type CoordTuple = [number, number];
+
+export type CellProps = { isShot: boolean };

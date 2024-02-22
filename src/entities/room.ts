@@ -33,7 +33,7 @@ class Room {
 		}
 	}
 	startGame() {
-		new Game(this._roomPlayers)
+		new Game(this._roomPlayers);
 	}
 }
 

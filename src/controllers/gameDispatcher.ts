@@ -20,9 +20,14 @@ const gameDispatcher = (playersList: PlayersList, roomList: RoomList) => {
 		add_ships: (_data: string, _socket: WebSocket, _currPlayer: CurrPlayer) => {
 			const currPlayer = _currPlayer.getPlayer();
 			const { ships } = validateJson(_data);
-			currPlayer._ships = ships;
+			currPlayer._shipsSchema = ships;
 			const playerRoom = roomList.getRoomById(currPlayer._room_id);
 			playerRoom.setShipsSent();
+		},
+		attack: (_data: string, _socket: WebSocket, _currPlayer: CurrPlayer) => {
+			const currPlayer = _currPlayer.getPlayer();
+			const { indexPlayer, x, y } = validateJson(_data);
+			currPlayer._game.attack(indexPlayer, x, y);
 		},
 	};
 };

@@ -1,0 +1,1 @@
+{"version":3,"file":"currentPlayer.js","sourceRoot":"","sources":["../../../src/entities/currentPlayer.ts"],"names":[],"mappings":";;AAEA,MAAM,UAAU;IACf,cAAc,CAAmB;IACjC;QACC,IAAI,CAAC,cAAc,CAAC;IACrB,CAAC;IACD,SAAS;QACR,OAAO,IAAI,CAAC,cAAwB,CAAC;IACtC,CAAC;IACD,SAAS,CAAC,MAAc;QACvB,IAAI,CAAC,cAAc,GAAG,MAAM,CAAC;IAC9B,CAAC;CACD;AAED,kBAAe,UAAU,CAAC"}

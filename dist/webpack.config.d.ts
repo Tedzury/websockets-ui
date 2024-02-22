@@ -22,7 +22,7 @@ declare const _default: ({ mode }: {
     };
     externals: {
         bufferutil: string;
-        "utf-8-validate": string;
+        'utf-8-validate': string;
     };
 };
 export default _default;
