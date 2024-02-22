@@ -7,6 +7,7 @@ class ShipsList {
 	_lastKilledSurrCells?: CoordTuple[];
 	constructor(shipsArr: ShipObjType[]) {
 		this._shipList = shipsArr.map((shipObj) => new Ship(shipObj, this));
+		this._lastKilledSurrCells = [];
 	}
 	checkShipHit(x: number, y: number) {
 		return this._shipList.reduce((status, ship) => {

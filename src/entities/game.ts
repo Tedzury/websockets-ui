@@ -17,7 +17,7 @@ class Game {
 	_gameId: string;
 	_currPlayer: number;
 	constructor(players: Player[]) {
-		this._currPlayer = 0;
+		this._currPlayer = 1;
 		this._players = players;
 		this._gameId = randomUUID();
 		this._players.forEach((player) => {
@@ -29,7 +29,7 @@ class Game {
 			};
 			player._shipsList = new ShipsList(player._shipsSchema);
 			player._socket.send(messageWrapper(MSG_TYPES.START_GAME, data));
-			player._socket.send(messageWrapper(MSG_TYPES.TURN, { currentPlayer: this._players[1]._id }));
+			player._socket.send(messageWrapper(MSG_TYPES.TURN, { currentPlayer: this._players[this._currPlayer]._id }));
 		});
 	}
 	attack(indexPlayer: string, x: number, y: number) {
@@ -41,22 +41,12 @@ class Game {
 			return console.log(ERROR_MSGS.OPPONENTS_TURN);
 		}
 		if (defender._field[x][y].isShot === true) {
-			this._players.forEach((player) =>
-				player._socket.send(
-					messageWrapper(MSG_TYPES.ATTACK, {
-						position: { x, y },
-						currentPlayer: defender._id,
-						status: ATTACK_STATUS.MISS,
-					}),
-				),
-			);
-			this.passTurn();
-			return;
+			attacker._socket.send(messageWrapper(MSG_TYPES.ERR, { message: ERROR_MSGS.ALREADY_SHOT_CELL }));
+			return console.log(ERROR_MSGS.ALREADY_SHOT_CELL);
 		}
 
 		defender._field[x][y].isShot = true;
 		const hitStatus = defender._shipsList.checkShipHit(x, y);
-		console.log(`Status: ${hitStatus}`);
 
 		if (hitStatus === ATTACK_STATUS.MISS) {
 			this._players.forEach((player) =>
@@ -71,28 +61,39 @@ class Game {
 			return this.passTurn();
 		}
 		if (hitStatus === ATTACK_STATUS.SHOT) {
-			this._players.forEach((player) =>
+			this._players.forEach((player) => {
 				player._socket.send(
 					messageWrapper(MSG_TYPES.ATTACK, {
 						position: { x, y },
 						currentPlayer: defender._id,
 						status: ATTACK_STATUS.SHOT,
 					}),
-				),
-			);
-			return this.passTurn();
+				);
+				player._socket.send(messageWrapper(MSG_TYPES.TURN, { currentPlayer: this._players[this._currPlayer]._id }));
+			});
 		}
 		if (hitStatus === ATTACK_STATUS.KILLED) {
-			this._players.forEach((player) =>
+			const surrCells = defender._shipsList._lastKilledSurrCells;
+			this._players.forEach((player) => {
 				player._socket.send(
 					messageWrapper(MSG_TYPES.ATTACK, {
 						position: { x, y },
 						currentPlayer: defender._id,
 						status: ATTACK_STATUS.KILLED,
 					}),
-				),
-			);
-			return this.passTurn();
+				);
+				surrCells.forEach((cell) => {
+					defender._field[cell[0]][cell[1]].isShot = true;
+					player._socket.send(
+						messageWrapper(MSG_TYPES.ATTACK, {
+							position: { x: cell[0], y: cell[1] },
+							currentPlayer: defender._id,
+							status: ATTACK_STATUS.MISS,
+						}),
+					);
+				});
+				player._socket.send(messageWrapper(MSG_TYPES.TURN, { currentPlayer: this._players[this._currPlayer]._id }));
+			});
 		}
 	}
 
