@@ -9,6 +9,7 @@ const MSG_TYPES = {
 	START_GAME: 'start_game',
 	TURN: 'turn',
 	ATTACK: 'attack',
+	FINISH: 'finish',
 	ERR: 'error',
 };
 

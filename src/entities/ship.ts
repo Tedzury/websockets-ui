@@ -26,13 +26,17 @@ class Ship {
 	}
 	checkAlive() {
 		if (this._health_points === 0) {
+			this.removeShip();
 			this.sendSurroundingCells();
 			return ATTACK_STATUS.KILLED;
 		}
 		return ATTACK_STATUS.SHOT;
 	}
 	sendSurroundingCells() {
-		this._shipsList._lastKilledSurrCells = this._surroundingCells;
+		this._shipsList.setLastKilledSurrCells(this._surroundingCells);
+	}
+	removeShip() {
+		this._shipsList.reduceShipsLeft();
 	}
 }
 

@@ -19,7 +19,7 @@ const reg = (
 		_socket.send(messageWrapper(MSG_TYPES.ERR, { message: ERROR_MSGS.PLAYER_ALREADY_ACTIVE }));
 		return console.log(ERROR_MSGS.PLAYER_ALREADY_ACTIVE);
 	}
-	const newPlayer = new Player(name, password, _socket);
+	const newPlayer = new Player(name, password, _socket, playersList);
 	_currPlayer.setPlayer(newPlayer);
 	playersList.addPlayer(newPlayer);
 	_socket.send(messageWrapper(MSG_TYPES.REG, newPlayer.getPlayerInfo()));

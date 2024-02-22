@@ -32,6 +32,7 @@ class Game {
 			player._socket.send(messageWrapper(MSG_TYPES.TURN, { currentPlayer: this._players[this._currPlayer]._id }));
 		});
 	}
+
 	attack(indexPlayer: string, x: number, y: number) {
 		const defender = this._players.find((player) => player._id === indexPlayer);
 		const attacker = this._players.find((player) => player._id !== indexPlayer);
@@ -48,53 +49,74 @@ class Game {
 		defender._field[x][y].isShot = true;
 		const hitStatus = defender._shipsList.checkShipHit(x, y);
 
-		if (hitStatus === ATTACK_STATUS.MISS) {
-			this._players.forEach((player) =>
+		if (hitStatus === ATTACK_STATUS.MISS) return this.sendMissFeedback(x, y);
+		if (hitStatus === ATTACK_STATUS.SHOT) return this.sendShotFeedback(x, y);
+		if (hitStatus === ATTACK_STATUS.KILLED) return this.sendKillFeedback(x, y, attacker);
+	}
+
+	sendMissFeedback(x: number, y: number) {
+		this._players.forEach((player) =>
+			player._socket.send(
+				messageWrapper(MSG_TYPES.ATTACK, {
+					position: { x, y },
+					currentPlayer: this._players[this._currPlayer]._id,
+					status: ATTACK_STATUS.MISS,
+				}),
+			),
+		);
+		this.passTurn();
+	}
+
+	sendShotFeedback(x: number, y: number) {
+		this._players.forEach((player) => {
+			player._socket.send(
+				messageWrapper(MSG_TYPES.ATTACK, {
+					position: { x, y },
+					currentPlayer: this._players[this._currPlayer]._id,
+					status: ATTACK_STATUS.SHOT,
+				}),
+			);
+			player._socket.send(messageWrapper(MSG_TYPES.TURN, { currentPlayer: this._players[this._currPlayer]._id }));
+		});
+	}
+
+	sendKillFeedback(x: number, y: number, attacker: Player) {
+		const surrCells = this._players[this._currPlayer]._shipsList._lastKilledSurrCells;
+		const noShipsLeft = this._players[this._currPlayer]._shipsList.checkNoShipsLeft();
+		if (noShipsLeft) {
+			attacker._wins += 1;
+		}
+		this._players.forEach((player) => {
+			player._socket.send(
+				messageWrapper(MSG_TYPES.ATTACK, {
+					position: { x, y },
+					currentPlayer: this._players[this._currPlayer]._id,
+					status: ATTACK_STATUS.KILLED,
+				}),
+			);
+			surrCells.forEach((cell) => {
+				this._players[this._currPlayer]._field[cell[0]][cell[1]].isShot = true;
 				player._socket.send(
 					messageWrapper(MSG_TYPES.ATTACK, {
-						position: { x, y },
-						currentPlayer: defender._id,
+						position: { x: cell[0], y: cell[1] },
+						currentPlayer: this._players[this._currPlayer]._id,
 						status: ATTACK_STATUS.MISS,
 					}),
-				),
-			);
-			return this.passTurn();
-		}
-		if (hitStatus === ATTACK_STATUS.SHOT) {
-			this._players.forEach((player) => {
-				player._socket.send(
-					messageWrapper(MSG_TYPES.ATTACK, {
-						position: { x, y },
-						currentPlayer: defender._id,
-						status: ATTACK_STATUS.SHOT,
-					}),
 				);
-				player._socket.send(messageWrapper(MSG_TYPES.TURN, { currentPlayer: this._players[this._currPlayer]._id }));
 			});
-		}
-		if (hitStatus === ATTACK_STATUS.KILLED) {
-			const surrCells = defender._shipsList._lastKilledSurrCells;
-			this._players.forEach((player) => {
+			//TODO: decompose winner feedback, implement cleaning players data
+			player._socket.send(messageWrapper(MSG_TYPES.TURN, { currentPlayer: this._players[this._currPlayer]._id }));
+			if (noShipsLeft) {
+				attacker._wins += 1;
+				player._socket.send(messageWrapper(MSG_TYPES.FINISH, { winPlayer: this._players[this._currPlayer]._id }));
 				player._socket.send(
-					messageWrapper(MSG_TYPES.ATTACK, {
-						position: { x, y },
-						currentPlayer: defender._id,
-						status: ATTACK_STATUS.KILLED,
-					}),
+					messageWrapper(
+						MSG_TYPES.UPDATE_WINNNERS,
+						this._players[this._currPlayer]._playersList.getUpdateWinnersData(),
+					),
 				);
-				surrCells.forEach((cell) => {
-					defender._field[cell[0]][cell[1]].isShot = true;
-					player._socket.send(
-						messageWrapper(MSG_TYPES.ATTACK, {
-							position: { x: cell[0], y: cell[1] },
-							currentPlayer: defender._id,
-							status: ATTACK_STATUS.MISS,
-						}),
-					);
-				});
-				player._socket.send(messageWrapper(MSG_TYPES.TURN, { currentPlayer: this._players[this._currPlayer]._id }));
-			});
-		}
+			}
+		});
 	}
 
 	passTurn() {
