@@ -1,3 +1,9 @@
+export type PlayerRecord = {
+	name: string;
+	passsword: string;
+	wins: number;
+};
+
 export type ShipType = {
 	position: {
 		x: number;

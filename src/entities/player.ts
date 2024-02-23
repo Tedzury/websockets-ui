@@ -9,6 +9,7 @@ class Player {
 	_password: string;
 	_error: boolean;
 	_errorText: string;
+	_status: 'online' | 'offline';
 	_socket: WebSocket;
 	_id: string;
 	_wins: number;
@@ -22,6 +23,7 @@ class Player {
 		this._name = name;
 		this._password = password;
 		this._socket = socket;
+		this._status = 'online';
 		this._id = randomUUID();
 		this._error = false;
 		this._errorText = '';

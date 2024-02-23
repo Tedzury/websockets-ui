@@ -14,17 +14,32 @@ const reg = (
 	roomList: RoomList,
 ) => {
 	const { name, password } = validateJson(_data);
-	const isActive = playersList.checkActivePlayer(name);
+	const user = playersList.checkUser(name);
+	if (!user) {
+		const newPlayer = new Player(name, password, _socket, playersList);
+		_currPlayer.setPlayer(newPlayer);
+		playersList.addPlayer(newPlayer);
+		_socket.send(messageWrapper(MSG_TYPES.REG, newPlayer.getPlayerInfo()));
+		_socket.send(messageWrapper(MSG_TYPES.UPDATE_ROOM, roomList.getAvailableRooms()));
+		_socket.send(messageWrapper(MSG_TYPES.UPDATE_WINNNERS, playersList.getUpdateWinnersData()));
+		return;
+	}
+	const isActive = user._status === 'online';
 	if (isActive) {
 		_socket.send(messageWrapper(MSG_TYPES.ERR, { message: ERROR_MSGS.PLAYER_ALREADY_ACTIVE }));
 		return console.log(ERROR_MSGS.PLAYER_ALREADY_ACTIVE);
 	}
-	const newPlayer = new Player(name, password, _socket, playersList);
-	_currPlayer.setPlayer(newPlayer);
-	playersList.addPlayer(newPlayer);
-	_socket.send(messageWrapper(MSG_TYPES.REG, newPlayer.getPlayerInfo()));
-	_socket.send(messageWrapper(MSG_TYPES.UPDATE_ROOM, roomList.getAvailableRooms()));
-	_socket.send(messageWrapper(MSG_TYPES.UPDATE_WINNNERS, playersList.getUpdateWinnersData()));
+	if (user._password === password) {
+		user._socket = _socket;
+		user._status = 'online';
+		_currPlayer.setPlayer(user);
+		_socket.send(messageWrapper(MSG_TYPES.REG, user.getPlayerInfo()));
+		_socket.send(messageWrapper(MSG_TYPES.UPDATE_ROOM, roomList.getAvailableRooms()));
+		_socket.send(messageWrapper(MSG_TYPES.UPDATE_WINNNERS, playersList.getUpdateWinnersData()));
+		return;
+	}
+	_socket.send(messageWrapper(MSG_TYPES.ERR, { message: ERROR_MSGS.WRONG_PASS }));
+	return console.log(ERROR_MSGS.WRONG_PASS);
 };
 
 export default reg;

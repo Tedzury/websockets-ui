@@ -5,7 +5,7 @@ class PlayersList {
 	constructor() {
 		this._list = [];
 	}
-	checkActivePlayer(_name: string): undefined | Player {
+	checkUser(_name: string): undefined | Player {
 		return this._list.find((player) => player.getPlayerName() === _name);
 	}
 	addPlayer(_player: Player) {

@@ -25,7 +25,7 @@ const socketHandler = (socket: WebSocket) => {
 	socket.onclose = () => {
 		const currentPlayer = currPlayer.getPlayer();
 		if (currentPlayer) {
-			playersList.removePlayer(currentPlayer._id);
+			currentPlayer._status = 'offline';
 			if (currentPlayer._room_id) {
 				roomList.deleteRoom(currentPlayer._room_id);
 				currentPlayer.removeRoom();

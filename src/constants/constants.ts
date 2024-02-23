@@ -28,6 +28,7 @@ const ERROR_MSGS = {
 	ALREADY_SHOT_CELL:
 		"You've already shoot that cell, it is pretty dumb to shoot it again, right? Try to choose another cell!",
 	OPPONENTS_TURN: "It's not your turn now, opponent takes it's shot!",
+	WRONG_PASS: "Password doesn't match!",
 };
 
 export { MSG_TYPES, ERROR_MSGS };
