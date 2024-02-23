@@ -55,6 +55,13 @@ class Player {
 			wins: this._wins,
 		};
 	}
+	gameCleanup() {
+		this._room_id = '';
+		this._shipsSchema = [];
+		this._game = undefined;
+		this._field = [];
+		this._shipsList = undefined;
+	}
 }
 
 export default Player;

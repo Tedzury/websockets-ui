@@ -51,7 +51,7 @@ class Game {
 
 		if (hitStatus === ATTACK_STATUS.MISS) return this.sendMissFeedback(x, y);
 		if (hitStatus === ATTACK_STATUS.SHOT) return this.sendShotFeedback(x, y);
-		if (hitStatus === ATTACK_STATUS.KILLED) return this.sendKillFeedback(x, y, attacker);
+		if (hitStatus === ATTACK_STATUS.KILLED) return this.sendKillFeedback(x, y);
 	}
 
 	sendMissFeedback(x: number, y: number) {
@@ -80,12 +80,10 @@ class Game {
 		});
 	}
 
-	sendKillFeedback(x: number, y: number, attacker: Player) {
+	sendKillFeedback(x: number, y: number) {
 		const surrCells = this._players[this._currPlayer]._shipsList._lastKilledSurrCells;
 		const noShipsLeft = this._players[this._currPlayer]._shipsList.checkNoShipsLeft();
-		if (noShipsLeft) {
-			attacker._wins += 1;
-		}
+
 		this._players.forEach((player) => {
 			player._socket.send(
 				messageWrapper(MSG_TYPES.ATTACK, {
@@ -104,18 +102,22 @@ class Game {
 					}),
 				);
 			});
-			//TODO: decompose winner feedback, implement cleaning players data
 			player._socket.send(messageWrapper(MSG_TYPES.TURN, { currentPlayer: this._players[this._currPlayer]._id }));
-			if (noShipsLeft) {
-				attacker._wins += 1;
-				player._socket.send(messageWrapper(MSG_TYPES.FINISH, { winPlayer: this._players[this._currPlayer]._id }));
-				player._socket.send(
-					messageWrapper(
-						MSG_TYPES.UPDATE_WINNNERS,
-						this._players[this._currPlayer]._playersList.getUpdateWinnersData(),
-					),
-				);
-			}
+		});
+		if (noShipsLeft) {
+			this.declareVictory();
+		}
+	}
+
+	declareVictory() {
+		const attacker = this._players.find((player) => player._id !== this._players[this._currPlayer]._id);
+		attacker._wins += 1;
+		this._players.forEach((player) => {
+			player._socket.send(messageWrapper(MSG_TYPES.FINISH, { winPlayer: this._players[this._currPlayer]._id }));
+			player._socket.send(
+				messageWrapper(MSG_TYPES.UPDATE_WINNNERS, this._players[this._currPlayer]._playersList.getUpdateWinnersData()),
+			);
+			player.gameCleanup();
 		});
 	}
 

@@ -18,7 +18,10 @@ class PlayersList {
 		return this._list.find((player) => player._id === _player_id);
 	}
 	getUpdateWinnersData() {
-		return this._list.map((player) => player.getWinsData()).filter((winner) => winner.wins > 0);
+		return this._list
+			.map((player) => player.getWinsData())
+			.filter((winner) => winner.wins > 0)
+			.sort((a, b) => a.wins - b.wins);
 	}
 }
 
