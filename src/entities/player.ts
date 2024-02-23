@@ -16,7 +16,7 @@ class Player {
 	_room_id: string;
 	_shipsSchema?: ShipType[];
 	_game?: Game;
-	_field?: CellProps[][];
+	_enemyField?: CellProps[][];
 	_shipsList?: ShipsList;
 	constructor(name: string, password: string, socket: WebSocket, playersList: PlayersList) {
 		this._name = name;
@@ -59,7 +59,7 @@ class Player {
 		this._room_id = '';
 		this._shipsSchema = [];
 		this._game = undefined;
-		this._field = [];
+		this._enemyField = [];
 		this._shipsList = undefined;
 	}
 }

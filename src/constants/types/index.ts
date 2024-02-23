@@ -19,4 +19,6 @@ export type ShipObjType = {
 
 export type CoordTuple = [number, number];
 
-export type CellProps = { isShot: boolean };
+export type hitStatuses = 'miss' | 'shot' | 'killed';
+
+export type CellProps = { status: hitStatuses | 'unknown' };

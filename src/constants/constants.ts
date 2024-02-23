@@ -10,6 +10,7 @@ const MSG_TYPES = {
 	TURN: 'turn',
 	ATTACK: 'attack',
 	FINISH: 'finish',
+	RANDOM_ATTACK: 'randomAttack',
 	ERR: 'error',
 };
 

@@ -3,14 +3,9 @@ import messageWrapper from '../helpers/messageWrapper';
 import Player from './player';
 import ShipsList from './shipsList';
 import { randomUUID } from 'crypto';
-import { CellProps } from '../constants/types';
-
-const prepareField = () => {
-	const field: CellProps[][] = new Array(10)
-		.fill('row')
-		.map(() => new Array(10).fill('column').map(() => ({ isShot: false })));
-	return field;
-};
+import { hitStatuses } from '../constants/types';
+import getRandomCoords from '../helpers/getRandomCoords';
+import prepareEnemyField from '../helpers/prepareEnemyField';
 
 class Game {
 	_players: Player[];
@@ -22,7 +17,7 @@ class Game {
 		this._gameId = randomUUID();
 		this._players.forEach((player) => {
 			player._game = this;
-			player._field = prepareField();
+			player._enemyField = prepareEnemyField();
 			const data = {
 				ships: player._shipsSchema,
 				currentPlayerIndex: player._id,
@@ -41,17 +36,40 @@ class Game {
 			attacker._socket.send(messageWrapper(MSG_TYPES.ERR, { message: ERROR_MSGS.OPPONENTS_TURN }));
 			return console.log(ERROR_MSGS.OPPONENTS_TURN);
 		}
-		if (defender._field[x][y].isShot === true) {
-			attacker._socket.send(messageWrapper(MSG_TYPES.ERR, { message: ERROR_MSGS.ALREADY_SHOT_CELL }));
-			return console.log(ERROR_MSGS.ALREADY_SHOT_CELL);
+		if (attacker._enemyField[x][y].status !== 'unknown') {
+			return this.sendAlreadyShotFeedback(x, y, attacker._enemyField[x][y].status);
 		}
 
-		defender._field[x][y].isShot = true;
 		const hitStatus = defender._shipsList.checkShipHit(x, y);
+		attacker._enemyField[x][y].status = hitStatus as hitStatuses;
 
-		if (hitStatus === ATTACK_STATUS.MISS) return this.sendMissFeedback(x, y);
-		if (hitStatus === ATTACK_STATUS.SHOT) return this.sendShotFeedback(x, y);
-		if (hitStatus === ATTACK_STATUS.KILLED) return this.sendKillFeedback(x, y);
+		if (hitStatus === ATTACK_STATUS.MISS) {
+			this.sendMissFeedback(x, y);
+		} else if (hitStatus === ATTACK_STATUS.SHOT) {
+			return this.sendShotFeedback(x, y);
+		} else {
+			this.sendKillFeedback(x, y);
+		}
+	}
+
+	randomAttack(indexPlayer: string) {
+		const attacker = this._players.find((player) => player._id !== indexPlayer);
+
+		const [x, y] = getRandomCoords(attacker._enemyField);
+		this.attack(indexPlayer, x, y);
+	}
+
+	sendAlreadyShotFeedback(x: number, y: number, status: string) {
+		this._players.forEach((player) =>
+			player._socket.send(
+				messageWrapper(MSG_TYPES.ATTACK, {
+					position: { x, y },
+					currentPlayer: this._players[this._currPlayer]._id,
+					status: status,
+				}),
+			),
+		);
+		this.passTurn();
 	}
 
 	sendMissFeedback(x: number, y: number) {
@@ -81,28 +99,30 @@ class Game {
 	}
 
 	sendKillFeedback(x: number, y: number) {
-		const surrCells = this._players[this._currPlayer]._shipsList._lastKilledSurrCells;
-		const noShipsLeft = this._players[this._currPlayer]._shipsList.checkNoShipsLeft();
+		const defender = this._players[this._currPlayer];
+		const attacker = this._players.find((player) => player._id !== defender._id);
+		const surrCells = defender._shipsList._lastKilledSurrCells;
+		const noShipsLeft = defender._shipsList.checkNoShipsLeft();
 
 		this._players.forEach((player) => {
 			player._socket.send(
 				messageWrapper(MSG_TYPES.ATTACK, {
 					position: { x, y },
-					currentPlayer: this._players[this._currPlayer]._id,
+					currentPlayer: defender._id,
 					status: ATTACK_STATUS.KILLED,
 				}),
 			);
 			surrCells.forEach((cell) => {
-				this._players[this._currPlayer]._field[cell[0]][cell[1]].isShot = true;
+				attacker._enemyField[cell[0]][cell[1]].status = ATTACK_STATUS.MISS as hitStatuses;
 				player._socket.send(
 					messageWrapper(MSG_TYPES.ATTACK, {
 						position: { x: cell[0], y: cell[1] },
-						currentPlayer: this._players[this._currPlayer]._id,
+						currentPlayer: defender._id,
 						status: ATTACK_STATUS.MISS,
 					}),
 				);
 			});
-			player._socket.send(messageWrapper(MSG_TYPES.TURN, { currentPlayer: this._players[this._currPlayer]._id }));
+			player._socket.send(messageWrapper(MSG_TYPES.TURN, { currentPlayer: defender._id }));
 		});
 		if (noShipsLeft) {
 			this.declareVictory();
