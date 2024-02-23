@@ -14,7 +14,7 @@ const MSG_TYPES = {
 	ERR: 'error',
 };
 
-export const ATTACK_STATUS = {
+const ATTACK_STATUS = {
 	MISS: 'miss',
 	KILLED: 'killed',
 	SHOT: 'shot',
@@ -31,4 +31,4 @@ const ERROR_MSGS = {
 	WRONG_PASS: "Password doesn't match!",
 };
 
-export { MSG_TYPES, ERROR_MSGS };
+export { MSG_TYPES, ERROR_MSGS, ATTACK_STATUS };

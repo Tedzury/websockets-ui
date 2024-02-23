@@ -4,7 +4,9 @@ import RoomList from '../entities/roomList';
 import reg from './dispatchSubFuncs/reg';
 import createRoom from './dispatchSubFuncs/createRoom';
 import addUserToRoom from './dispatchSubFuncs/addUserToRoom';
-import validateJson from '../helpers/validateJson';
+import addShips from './dispatchSubFuncs/addShips';
+import attack from './dispatchSubFuncs/attack';
+import randomAttack from './dispatchSubFuncs/randomAttack';
 
 const gameDispatcher = (playersList: PlayersList, roomList: RoomList) => {
 	return {
@@ -18,21 +20,13 @@ const gameDispatcher = (playersList: PlayersList, roomList: RoomList) => {
 			addUserToRoom(_data, _socket, _currPlayer, playersList, roomList);
 		},
 		add_ships: (_data: string, _socket: WebSocket, _currPlayer: CurrPlayer) => {
-			const currPlayer = _currPlayer.getPlayer();
-			const { ships } = validateJson(_data);
-			currPlayer._shipsSchema = ships;
-			const playerRoom = roomList.getRoomById(currPlayer._room_id);
-			playerRoom.setShipsSent();
+			addShips(_data, _socket, _currPlayer, roomList);
 		},
 		attack: (_data: string, _socket: WebSocket, _currPlayer: CurrPlayer) => {
-			const currPlayer = _currPlayer.getPlayer();
-			const { indexPlayer, x, y } = validateJson(_data);
-			currPlayer._game.attack(indexPlayer, x, y);
+			attack(_data, _socket, _currPlayer);
 		},
 		randomAttack: (_data: string, _socket: WebSocket, _currPlayer: CurrPlayer) => {
-			const currPlayer = _currPlayer.getPlayer();
-			const { indexPlayer } = validateJson(_data);
-			currPlayer._game.randomAttack(indexPlayer);
+			randomAttack(_data, _socket, _currPlayer);
 		},
 	};
 };

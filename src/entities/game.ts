@@ -125,18 +125,16 @@ class Game {
 			player._socket.send(messageWrapper(MSG_TYPES.TURN, { currentPlayer: defender._id }));
 		});
 		if (noShipsLeft) {
-			this.declareVictory();
+			this.declareVictory(defender._id);
 		}
 	}
 
-	declareVictory() {
-		const attacker = this._players.find((player) => player._id !== this._players[this._currPlayer]._id);
+	declareVictory(lostPlayerId: string) {
+		const attacker = this._players.find((player) => player._id !== lostPlayerId);
 		attacker._wins += 1;
 		this._players.forEach((player) => {
-			player._socket.send(messageWrapper(MSG_TYPES.FINISH, { winPlayer: this._players[this._currPlayer]._id }));
-			player._socket.send(
-				messageWrapper(MSG_TYPES.UPDATE_WINNNERS, this._players[this._currPlayer]._playersList.getUpdateWinnersData()),
-			);
+			player._socket.send(messageWrapper(MSG_TYPES.FINISH, { winPlayer: lostPlayerId }));
+			player._socket.send(messageWrapper(MSG_TYPES.UPDATE_WINNNERS, attacker._playersList.getUpdateWinnersData()));
 			player.gameCleanup();
 		});
 	}
