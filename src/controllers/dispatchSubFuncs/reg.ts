@@ -1,5 +1,4 @@
 import { ERROR_MSGS, MSG_TYPES } from '../../constants/constants';
-import CurrPlayer from '../../entities/currentPlayer';
 import Player from '../../entities/player';
 import PlayersList from '../../entities/playerList';
 import RoomList from '../../entities/roomList';
@@ -9,7 +8,7 @@ import validateJson from '../../helpers/validateJson';
 const reg = (
 	_data: string,
 	_socket: WebSocket,
-	_currPlayer: CurrPlayer,
+	setCurrentPlayer: (currPlayer: Player) => void,
 	playersList: PlayersList,
 	roomList: RoomList,
 ) => {
@@ -17,7 +16,7 @@ const reg = (
 	const user = playersList.checkUser(name);
 	if (!user) {
 		const newPlayer = new Player(name, password, _socket, playersList);
-		_currPlayer.setPlayer(newPlayer);
+		setCurrentPlayer(newPlayer);
 		playersList.addPlayer(newPlayer);
 		_socket.send(messageWrapper(MSG_TYPES.REG, newPlayer.getPlayerInfo()));
 		_socket.send(messageWrapper(MSG_TYPES.UPDATE_ROOM, roomList.getAvailableRooms()));
@@ -32,7 +31,7 @@ const reg = (
 	if (user._password === password) {
 		user._socket = _socket;
 		user._status = 'online';
-		_currPlayer.setPlayer(user);
+		setCurrentPlayer(user);
 		_socket.send(messageWrapper(MSG_TYPES.REG, user.getPlayerInfo()));
 		_socket.send(messageWrapper(MSG_TYPES.UPDATE_ROOM, roomList.getAvailableRooms()));
 		_socket.send(messageWrapper(MSG_TYPES.UPDATE_WINNNERS, playersList.getUpdateWinnersData()));

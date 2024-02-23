@@ -1,12 +1,11 @@
-import CurrPlayer from '../../entities/currentPlayer';
+import Player from '../../entities/player';
 import RoomList from '../../entities/roomList';
 import validateJson from '../../helpers/validateJson';
 
-const addShips = (_data: string, _socket: WebSocket, _currPlayer: CurrPlayer, roomList: RoomList) => {
-	const currPlayer = _currPlayer.getPlayer();
+const addShips = (_data: string, _socket: WebSocket, _currPlayer: Player, roomList: RoomList) => {
 	const { ships } = validateJson(_data);
-	currPlayer._shipsSchema = ships;
-	const playerRoom = roomList.getRoomById(currPlayer._room_id);
+	_currPlayer._shipsSchema = ships;
+	const playerRoom = roomList.getRoomById(_currPlayer._room_id);
 	playerRoom.setShipsSent();
 };
 
