@@ -23,20 +23,20 @@ class GameDispatcher {
 	reg(_data: string, _socket: WebSocket) {
 		reg(_data, _socket, this.setCurrentPlayer.bind(this), this._playersList, this._roomList);
 	}
-	create_room(_: string, _socket: WebSocket) {
-		createRoom(_socket, this._currPlayer, this._roomList);
+	create_room() {
+		createRoom(this._currPlayer, this._roomList);
 	}
-	add_user_to_room(_data: string, _socket: WebSocket) {
-		addUserToRoom(_data, _socket, this._currPlayer, this._playersList, this._roomList);
+	add_user_to_room(_data: string) {
+		addUserToRoom(_data, this._currPlayer, this._playersList, this._roomList);
 	}
-	add_ships(_data: string, _socket: WebSocket) {
-		addShips(_data, _socket, this._currPlayer, this._roomList);
+	add_ships(_data: string) {
+		addShips(_data, this._currPlayer, this._roomList);
 	}
-	attack(_data: string, _socket: WebSocket) {
-		attack(_data, _socket, this._currPlayer);
+	attack(_data: string) {
+		attack(_data, this._currPlayer);
 	}
-	randomAttack(_data: string, _socket: WebSocket) {
-		randomAttack(_data, _socket, this._currPlayer);
+	randomAttack(_data: string) {
+		randomAttack(_data, this._currPlayer);
 	}
 }
 

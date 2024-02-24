@@ -5,21 +5,15 @@ import RoomList from '../../entities/roomList';
 import messageWrapper from '../../helpers/messageWrapper';
 import validateJson from '../../helpers/validateJson';
 
-const addUserToRoom = (
-	_data: string,
-	_socket: WebSocket,
-	_currPlayer: Player,
-	playersList: PlayersList,
-	roomList: RoomList,
-) => {
+const addUserToRoom = (_data: string, _currPlayer: Player, playersList: PlayersList, roomList: RoomList) => {
 	const { indexRoom } = validateJson(_data);
 
 	if (_currPlayer._room_id === indexRoom) {
-		_socket.send(messageWrapper(MSG_TYPES.ERR, { message: ERROR_MSGS.OWN_ROOM }));
+		_currPlayer._socket.send(messageWrapper(MSG_TYPES.ERR, { message: ERROR_MSGS.OWN_ROOM }));
 		return console.log(ERROR_MSGS.OWN_ROOM);
 	}
 	if (_currPlayer._room_id) {
-		_socket.send(messageWrapper(MSG_TYPES.ERR, { message: ERROR_MSGS.ALREADY_IN_ROOM }));
+		_currPlayer._socket.send(messageWrapper(MSG_TYPES.ERR, { message: ERROR_MSGS.ALREADY_IN_ROOM }));
 		return console.log(ERROR_MSGS.ALREADY_IN_ROOM);
 	}
 

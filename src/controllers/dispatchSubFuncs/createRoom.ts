@@ -3,9 +3,9 @@ import { ERROR_MSGS, MSG_TYPES } from '../../constants/constants';
 import RoomList from '../../entities/roomList';
 import messageWrapper from '../../helpers/messageWrapper';
 
-const createRoom = (_socket: WebSocket, _currPlayer: Player, roomList: RoomList) => {
+const createRoom = (_currPlayer: Player, roomList: RoomList) => {
 	if (_currPlayer._room_id) {
-		_socket.send(messageWrapper(MSG_TYPES.ERR, { message: ERROR_MSGS.ALREADY_IN_ROOM }));
+		_currPlayer._socket.send(messageWrapper(MSG_TYPES.ERR, { message: ERROR_MSGS.ALREADY_IN_ROOM }));
 		return console.log(ERROR_MSGS.ALREADY_IN_ROOM);
 	}
 	const roomId = roomList.createRoom(_currPlayer);
