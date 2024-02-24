@@ -23,7 +23,7 @@ class RoomList {
 		const newRoom = new Room();
 		newRoom.addPlayer(roomUser);
 		this._roomList.push(newRoom);
-		return newRoom.getRoomId();
+		return newRoom;
 	}
 	deleteRoom(roomId: string) {
 		this._roomList = this._roomList.filter((room) => room._roomId !== roomId);

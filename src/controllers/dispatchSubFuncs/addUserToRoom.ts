@@ -18,7 +18,7 @@ const addUserToRoom = (_data: string, _currPlayer: Player, playersList: PlayersL
 	}
 
 	const desiredRoom = roomList.getRoomById(indexRoom);
-	_currPlayer.addRoom(indexRoom);
+	_currPlayer.addRoom(desiredRoom);
 	desiredRoom.addPlayer(_currPlayer);
 	roomList.informPlayers();
 

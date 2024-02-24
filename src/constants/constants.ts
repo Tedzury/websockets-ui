@@ -11,6 +11,7 @@ const MSG_TYPES = {
 	ATTACK: 'attack',
 	FINISH: 'finish',
 	RANDOM_ATTACK: 'randomAttack',
+	SINGLE_PLAY: 'single_play',
 	ERR: 'error',
 };
 

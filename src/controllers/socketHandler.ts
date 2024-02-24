@@ -4,6 +4,7 @@ import PlayersList from '../entities/playerList';
 import RoomList from '../entities/roomList';
 
 import GameDispatcher from './gameDispatcher';
+import Game from '../entities/game';
 
 const playersList = new PlayersList();
 const roomList = new RoomList(playersList);
@@ -30,7 +31,7 @@ const socketHandler = (socket: WebSocket) => {
 					currentPlayer.removeRoom();
 					roomList.informPlayers();
 				}
-				if (currentPlayer._game) {
+				if (currentPlayer._game instanceof Game) {
 					currentPlayer._game.declareVictory(currentPlayer._id);
 				}
 			}

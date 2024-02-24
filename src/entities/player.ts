@@ -3,6 +3,9 @@ import { CellProps, ShipType } from '../constants/types';
 import Game from './game';
 import ShipsList from './shipsList';
 import PlayersList from './playerList';
+import SingleGame from './singleGame';
+import SingleRoom from './singleRoom';
+import Room from './room';
 
 class Player {
 	_name: string;
@@ -14,9 +17,10 @@ class Player {
 	_id: string;
 	_wins: number;
 	_playersList: PlayersList;
+	_room: Room | SingleRoom;
 	_room_id: string;
 	_shipsSchema?: ShipType[];
-	_game?: Game;
+	_game?: Game | SingleGame;
 	_enemyField?: CellProps[][];
 	_shipsList?: ShipsList;
 	constructor(name: string, password: string, socket: WebSocket, playersList: PlayersList) {
@@ -42,8 +46,9 @@ class Player {
 	getPlayerName() {
 		return this._name;
 	}
-	addRoom(roomId: string) {
-		this._room_id = roomId;
+	addRoom(room: Room) {
+		this._room = room;
+		this._room_id = room.getRoomId();
 	}
 	removeRoom() {
 		this._room_id = '';

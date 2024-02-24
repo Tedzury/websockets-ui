@@ -8,8 +8,8 @@ const createRoom = (_currPlayer: Player, roomList: RoomList) => {
 		_currPlayer._socket.send(messageWrapper(MSG_TYPES.ERR, { message: ERROR_MSGS.ALREADY_IN_ROOM }));
 		return console.log(ERROR_MSGS.ALREADY_IN_ROOM);
 	}
-	const roomId = roomList.createRoom(_currPlayer);
-	_currPlayer.addRoom(roomId);
+	const room = roomList.createRoom(_currPlayer);
+	_currPlayer.addRoom(room);
 	roomList.informPlayers();
 };
 
