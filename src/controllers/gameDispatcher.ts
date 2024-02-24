@@ -7,10 +7,7 @@ import addUserToRoom from './dispatchSubFuncs/addUserToRoom';
 import addShips from './dispatchSubFuncs/addShips';
 import attack from './dispatchSubFuncs/attack';
 import randomAttack from './dispatchSubFuncs/randomAttack';
-import Bot from '../entities/bot';
-import SingleRoom from '../entities/singleRoom';
-import messageWrapper from '../helpers/messageWrapper';
-import { MSG_TYPES } from '../constants/constants';
+import singlePlay from './dispatchSubFuncs/singlePlay';
 
 class GameDispatcher {
 	_roomList: RoomList;
@@ -43,16 +40,7 @@ class GameDispatcher {
 		randomAttack(_data, this._currPlayer);
 	}
 	single_play() {
-		const myBot = new Bot();
-		const singleRoom = new SingleRoom(this._currPlayer, myBot);
-		this._currPlayer._room = singleRoom;
-		this._currPlayer._room_id = singleRoom._roomId;
-		this._currPlayer._socket.send(
-			messageWrapper(MSG_TYPES.CREATE_GAME, {
-				idGame: this._currPlayer._room_id,
-				idPlayer: myBot._id,
-			}),
-		);
+		singlePlay(this._currPlayer);
 	}
 }
 
