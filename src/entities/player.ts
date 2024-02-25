@@ -12,7 +12,7 @@ class Player {
 	_password: string;
 	_error: boolean;
 	_errorText: string;
-	_status: 'online' | 'offline';
+	_status: string;
 	_socket: WebSocket;
 	_id: string;
 	_wins: number;
@@ -63,6 +63,7 @@ class Player {
 		};
 	}
 	gameCleanup() {
+		this._room = undefined;
 		this._room_id = '';
 		this._shipsSchema = [];
 		this._game = undefined;

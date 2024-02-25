@@ -5,27 +5,27 @@ import RoomList from '../../entities/roomList';
 import messageWrapper from '../../helpers/messageWrapper';
 import validateJson from '../../helpers/validateJson';
 
-const addUserToRoom = (_data: string, _currPlayer: Player, playersList: PlayersList, roomList: RoomList) => {
-	const { indexRoom } = validateJson(_data);
+const addUserToRoom = (data: string, currPlayer: Player, playersList: PlayersList, roomList: RoomList) => {
+	const { indexRoom } = validateJson(data);
 
-	if (_currPlayer._room_id === indexRoom) {
-		_currPlayer._socket.send(messageWrapper(MSG_TYPES.ERR, { message: ERROR_MSGS.OWN_ROOM }));
+	if (currPlayer._room_id === indexRoom) {
+		currPlayer._socket.send(messageWrapper(MSG_TYPES.ERR, { message: ERROR_MSGS.OWN_ROOM }));
 		return console.log(ERROR_MSGS.OWN_ROOM);
 	}
-	if (_currPlayer._room_id) {
-		_currPlayer._socket.send(messageWrapper(MSG_TYPES.ERR, { message: ERROR_MSGS.ALREADY_IN_ROOM }));
+	if (currPlayer._room_id) {
+		currPlayer._socket.send(messageWrapper(MSG_TYPES.ERR, { message: ERROR_MSGS.ALREADY_IN_ROOM }));
 		return console.log(ERROR_MSGS.ALREADY_IN_ROOM);
 	}
 
 	const desiredRoom = roomList.getRoomById(indexRoom);
-	_currPlayer.addRoom(desiredRoom);
-	desiredRoom.addPlayer(_currPlayer);
+	currPlayer.addRoom(desiredRoom);
+	desiredRoom.addPlayer(currPlayer);
 	roomList.informPlayers();
 
 	const enemyId = desiredRoom._roomPlayers[0]._id;
 	const enemyPlayer = playersList.getPlayerById(enemyId);
 
-	_currPlayer._socket.send(
+	currPlayer._socket.send(
 		messageWrapper(MSG_TYPES.CREATE_GAME, {
 			idGame: indexRoom,
 			idPlayer: enemyId,
@@ -34,7 +34,7 @@ const addUserToRoom = (_data: string, _currPlayer: Player, playersList: PlayersL
 	enemyPlayer._socket.send(
 		messageWrapper(MSG_TYPES.CREATE_GAME, {
 			idGame: indexRoom,
-			idPlayer: _currPlayer._id,
+			idPlayer: currPlayer._id,
 		}),
 	);
 };

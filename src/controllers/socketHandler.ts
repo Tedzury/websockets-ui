@@ -1,5 +1,5 @@
 import validateJson from '../helpers/validateJson';
-import { ERROR_MSGS } from '../constants/constants';
+import { ERROR_MSGS, USER_STATUS } from '../constants/constants';
 import PlayersList from '../entities/playerList';
 import RoomList from '../entities/roomList';
 
@@ -25,7 +25,7 @@ const socketHandler = (socket: WebSocket) => {
 		socket.onclose = () => {
 			const currentPlayer = dispatcher._currPlayer;
 			if (currentPlayer) {
-				currentPlayer._status = 'offline';
+				currentPlayer._status = USER_STATUS.OFFLINE;
 				if (currentPlayer._room_id) {
 					roomList.deleteRoom(currentPlayer._room_id);
 					currentPlayer.removeRoom();

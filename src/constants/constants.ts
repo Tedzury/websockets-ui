@@ -21,6 +21,11 @@ const ATTACK_STATUS = {
 	SHOT: 'shot',
 };
 
+const USER_STATUS = {
+	ONLINE: 'online',
+	OFFLINE: 'offline',
+};
+
 const ERROR_MSGS = {
 	UNEXPENTED_ERR: 'Something went wrong!',
 	PLAYER_ALREADY_ACTIVE: "Current players is already active! You can't enter twice!",
@@ -32,4 +37,4 @@ const ERROR_MSGS = {
 	WRONG_PASS: "Password doesn't match!",
 };
 
-export { MSG_TYPES, ERROR_MSGS, ATTACK_STATUS };
+export { MSG_TYPES, ERROR_MSGS, ATTACK_STATUS, USER_STATUS };
