@@ -139,7 +139,6 @@ class SingleGame {
 	declareVictory(lostPlayerId: string) {
 		const attacker = this._players.find((player) => player._id !== lostPlayerId);
 		if (attacker instanceof Player) {
-			attacker._wins += 1;
 			this._players[0]._socket.send(
 				messageWrapper(MSG_TYPES.UPDATE_WINNNERS, attacker._playersList.getUpdateWinnersData()),
 			);

@@ -2,7 +2,7 @@ import Player from './player';
 declare class PlayersList {
     _list: Player[];
     constructor();
-    checkActivePlayer(_name: string): undefined | Player;
+    checkUser(_name: string): undefined | Player;
     addPlayer(_player: Player): void;
     removePlayer(_player_id: string): void;
     getPlayerById(_player_id: string): Player;

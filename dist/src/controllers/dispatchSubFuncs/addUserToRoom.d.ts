@@ -1,5 +1,5 @@
-import CurrPlayer from '../../entities/currentPlayer';
+import Player from '../../entities/player';
 import PlayersList from '../../entities/playerList';
 import RoomList from '../../entities/roomList';
-declare const addUserToRoom: (_data: string, _socket: WebSocket, _currPlayer: CurrPlayer, playersList: PlayersList, roomList: RoomList) => void;
+declare const addUserToRoom: (data: string, currPlayer: Player, playersList: PlayersList, roomList: RoomList) => void;
 export default addUserToRoom;

@@ -1,9 +1,10 @@
 import Player from './player';
-declare class Game {
-    _players: Player[];
+import Bot from './bot';
+declare class SingleGame {
+    _players: [Player, Bot];
     _gameId: string;
     _currPlayer: number;
-    constructor(players: Player[]);
+    constructor(player: Player, bot: Bot);
     attack(indexPlayer: string, x: number, y: number): void;
     randomAttack(indexPlayer: string): void;
     sendAlreadyShotFeedback(x: number, y: number, status: string): void;
@@ -13,4 +14,4 @@ declare class Game {
     declareVictory(lostPlayerId: string): void;
     passTurn(): void;
 }
-export default Game;
+export default SingleGame;

@@ -9,12 +9,19 @@ declare const MSG_TYPES: {
     START_GAME: string;
     TURN: string;
     ATTACK: string;
+    FINISH: string;
+    RANDOM_ATTACK: string;
+    SINGLE_PLAY: string;
     ERR: string;
 };
-export declare const ATTACK_STATUS: {
+declare const ATTACK_STATUS: {
     MISS: string;
     KILLED: string;
     SHOT: string;
+};
+declare const USER_STATUS: {
+    ONLINE: string;
+    OFFLINE: string;
 };
 declare const ERROR_MSGS: {
     UNEXPENTED_ERR: string;
@@ -23,5 +30,6 @@ declare const ERROR_MSGS: {
     OWN_ROOM: string;
     ALREADY_SHOT_CELL: string;
     OPPONENTS_TURN: string;
+    WRONG_PASS: string;
 };
-export { MSG_TYPES, ERROR_MSGS };
+export { MSG_TYPES, ERROR_MSGS, ATTACK_STATUS, USER_STATUS };

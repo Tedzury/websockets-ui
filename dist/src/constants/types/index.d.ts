@@ -1,3 +1,8 @@
+export type PlayerRecord = {
+    name: string;
+    passsword: string;
+    wins: number;
+};
 export type ShipType = {
     position: {
         x: number;
@@ -16,6 +21,7 @@ export type ShipObjType = {
     length: number;
 };
 export type CoordTuple = [number, number];
+export type hitStatuses = 'miss' | 'shot' | 'killed';
 export type CellProps = {
-    isShot: boolean;
+    status: hitStatuses | 'unknown';
 };

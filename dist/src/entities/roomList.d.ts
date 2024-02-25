@@ -7,7 +7,7 @@ declare class RoomList {
     constructor(playersList: PlayersList);
     informPlayers(): void;
     getRoomById(roomId: string): Room;
-    createRoom(roomUser: Player): string;
+    createRoom(roomUser: Player): Room;
     deleteRoom(roomId: string): void;
     getAvailableRooms(): {
         roomId: string;

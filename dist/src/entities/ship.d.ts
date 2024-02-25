@@ -9,5 +9,6 @@ declare class Ship {
     checkHit(hitCoord: CoordTuple): string;
     checkAlive(): string;
     sendSurroundingCells(): void;
+    removeShip(): void;
 }
 export default Ship;
