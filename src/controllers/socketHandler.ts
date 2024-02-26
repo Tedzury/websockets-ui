@@ -15,6 +15,7 @@ const socketHandler = (socket: WebSocket) => {
 		socket.onmessage = (msg: { data: string }) => {
 			const validJson = validateJson(msg.data);
 			const { type, data } = validJson;
+			console.log(`Received message with type: ${type} and following data: ${data}`);
 			if (dispatcher[type]) {
 				dispatcher[type](data, socket);
 			} else {
