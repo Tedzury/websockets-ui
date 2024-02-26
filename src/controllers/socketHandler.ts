@@ -10,6 +10,7 @@ const playersList = new PlayersList();
 const roomList = new RoomList(playersList);
 
 const socketHandler = (socket: WebSocket) => {
+	console.log('New user have connected to the server!');
 	const dispatcher = new GameDispatcher(roomList, playersList);
 	try {
 		socket.onmessage = (msg: { data: string }) => {
@@ -24,6 +25,7 @@ const socketHandler = (socket: WebSocket) => {
 		};
 
 		socket.onclose = () => {
+			console.log('User have lost connection with the server!');
 			const currentPlayer = dispatcher._currPlayer;
 			if (currentPlayer) {
 				currentPlayer._status = USER_STATUS.OFFLINE;
